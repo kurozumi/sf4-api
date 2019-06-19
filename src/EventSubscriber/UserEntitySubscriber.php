@@ -34,8 +34,9 @@ class UserEntitySubscriber implements EventSubscriberInterface
     {
         $entity = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
+        $contentType = $event->getRequest()->getContentType();
 
-        if(Request::METHOD_POST !== $method) {
+        if(Request::METHOD_POST !== $method || "application/json" !== $contentType) {
             return;
         }
 
