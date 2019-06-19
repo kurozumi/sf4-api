@@ -17,6 +17,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *      collectionOperations={"post"},
  *      normalizationContext={
  *          "groups"={"read"}
+ *      },
+ *      denormalizationContext={
+ *          "groups"={"write"}
  *      }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
@@ -37,7 +40,7 @@ class User implements UserInterface
      * @Assert\NotBlank()
      * @Assert\Email()
      * @Assert\Length(min=6, max=180)
-     * @Groups({"read"})
+     * @Groups({"read", "write"})
      */
     private $email;
 

@@ -15,9 +15,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "post"={"access_control"="is_granted('IS_AUTHENTICATED_FULLY')"}
  *      },
  *      itemOperations={
- *          "get"={"access_control"="is_granted('ROLE_USER') and object.user == user"},
- *          "put"={"access_control"="is_granted('ROLE_USER') and object.user == user"},
- *          "delete"={"access_control"="is_granted('ROLE_USER') and object.user == user"}
+ *          "get"={"access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object.getUser() == user"},
+ *          "put"={"access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object.getUser() == user"},
+ *          "delete"={"access_control"="is_granted('IS_AUTHENTICATED_FULLY') and object.getUser() == user"}
  *      }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\BookRepository")
@@ -58,7 +58,7 @@ class Book
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="books")
      * @ORM\JoinColumn(nullable=false)
      */
-    public $user;
+    private $user;
 
     public function __construct()
     {
