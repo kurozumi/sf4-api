@@ -1,8 +1,8 @@
 api_platform:
     title: Sample
     version: 1.0.0
-    formats:
-        json: ['application/json']
-        html: ['text/html']
+#    formats:
+#        json: ['application/json']
+#        html: ['text/html']
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']

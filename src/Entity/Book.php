@@ -10,11 +10,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource(
- *      attributes={"access_control"="is_granted('ROLE_USER')"},
+ *      collectionOperations={
+ *          "get",
+ *          "post"={"access_control"="is_granted('IS_AUTHENTICATED_FULLY')"}
+ *      },
  *      itemOperations={
- *          "get"={"access_control"="is_granted('ROLE_USER') and object.owner == user"},
- *          "put"={"access_control"="is_granted('ROLE_USER') and object.owner == user"},
- *          "delete"={"access_control"="is_granted('ROLE_USER') and object.owner == user"}
+ *          "get"={"access_control"="is_granted('ROLE_USER') and object.user == user"},
+ *          "put"={"access_control"="is_granted('ROLE_USER') and object.user == user"},
+ *          "delete"={"access_control"="is_granted('ROLE_USER') and object.user == user"}
  *      }
  * )
  * @ORM\Entity(repositoryClass="App\Repository\BookRepository")
@@ -29,12 +32,6 @@ class Book
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\Isbn()
-     */
-    private $isbn;
-
-    /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      */
@@ -47,12 +44,6 @@ class Book
     private $description;
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
-     */
-    private $author;
-
-    /**
      * @ORM\Column(type="datetime")
      * @Assert\NotBlank()
      */
@@ -63,6 +54,12 @@ class Book
      */
     private $reviews;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="books")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    public $user;
+
     public function __construct()
     {
         $this->reviews = new ArrayCollection();
@@ -71,18 +68,6 @@ class Book
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getIsbn(): ?string
-    {
-        return $this->isbn;
-    }
-
-    public function setIsbn(?string $isbn): self
-    {
-        $this->isbn = $isbn;
-
-        return $this;
     }
 
     public function getTitle(): ?string
@@ -105,18 +90,6 @@ class Book
     public function setDescription(string $description): self
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(string $author): self
-    {
-        $this->author = $author;
 
         return $this;
     }
@@ -160,6 +133,18 @@ class Book
                 $review->setBook(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

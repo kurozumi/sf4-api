@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 
 /**
  * @ApiResource()
@@ -46,6 +47,7 @@ class Review
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Book", inversedBy="reviews")
      * @Assert\NotNull()
+     * @ApiSubresource
      */
     private $book;
 
