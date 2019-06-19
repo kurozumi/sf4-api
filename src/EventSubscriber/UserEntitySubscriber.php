@@ -4,11 +4,13 @@ namespace App\EventSubscriber;
 
 use ApiPlatform\Core\EventListener\EventPriorities;
 use App\Entity\Book;
+use App\Entity\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserEntitySubscriber implements EventSubscriberInterface
 {
@@ -17,9 +19,15 @@ class UserEntitySubscriber implements EventSubscriberInterface
      */
     private $tokenStorage;
 
-    public function __construct(TokenStorageInterface $tokenStorage)
+    /**
+     * @var UserPasswordEncoderInterface
+     */
+    private $passwordEncoder;
+
+    public function __construct(TokenStorageInterface $tokenStorage, UserPasswordEncoderInterface $passwordEncoder)
     {
         $this->tokenStorage = $tokenStorage;
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     public function getAuthenticatedUser(ViewEvent $event)
@@ -27,14 +35,22 @@ class UserEntitySubscriber implements EventSubscriberInterface
         $entity = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
 
-        /** @var  $user */
-        $user = $this->tokenStorage->getToken()->getUser();
-
-        if(!$entity instanceof Book || Request::METHOD_POST !== $method) {
+        if(Request::METHOD_POST !== $method) {
             return;
         }
 
-        $entity->setUser($user);
+        if($entity instanceof User) {
+            $roles = $entity->getRoles();
+            $entity->setRoles($roles);
+            $entity->setPassword($this->passwordEncoder->encodePassword($entity, $entity->getPassword()));
+        }
+
+        if($entity instanceof Book) {
+            /** @var  User */
+            $user = $this->tokenStorage->getToken()->getUser();
+
+            $entity->setUser($user);
+        }
     }
 
     public static function getSubscribedEvents()
