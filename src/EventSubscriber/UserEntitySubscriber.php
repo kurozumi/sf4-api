@@ -3,12 +3,10 @@
 namespace App\EventSubscriber;
 
 use ApiPlatform\Core\EventListener\EventPriorities;
-use App\Entity\Book;
 use App\Entity\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -30,7 +28,13 @@ class UserEntitySubscriber implements EventSubscriberInterface
         $this->passwordEncoder = $passwordEncoder;
     }
 
-    public function getAuthenticatedUser(ViewEvent $event)
+    /**
+     * 新規ユーザー登録時にパスワードをハッシュ化します
+     * ※ViewEventはSymfony4.3以上で動作します
+     *
+     * @param ViewEvent $event
+     */
+    public function onKernelView(ViewEvent $event)
     {
         $entity = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
@@ -41,23 +45,14 @@ class UserEntitySubscriber implements EventSubscriberInterface
         }
 
         if($entity instanceof User) {
-            $roles = $entity->getRoles();
-            $entity->setRoles($roles);
             $entity->setPassword($this->passwordEncoder->encodePassword($entity, $entity->getPassword()));
-        }
-
-        if($entity instanceof Book) {
-            /** @var  User */
-            $user = $this->tokenStorage->getToken()->getUser();
-
-            $entity->setUser($user);
         }
     }
 
     public static function getSubscribedEvents()
     {
         return [
-            KernelEvents::VIEW => ['getAuthenticatedUser', EventPriorities::PRE_VALIDATE],
+            'kernel.view' => ['onKernelView', EventPriorities::PRE_VALIDATE],
         ];
     }
 }
