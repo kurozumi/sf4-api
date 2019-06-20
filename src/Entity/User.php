@@ -13,8 +13,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ApiResource(
+ *      collectionOperations={"post", "get"},
  *      itemOperations={"get"},
- *      collectionOperations={"post"},
  *      normalizationContext={
  *          "groups"={"read"}
  *      },
@@ -53,10 +53,11 @@ class User implements UserInterface
      * @var string The hashed password
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
-     * @Assert\Regex(
-     *      pattern="/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{7,}",
+     * @@Assert\Regex(
+     *      pattern="/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{7,}/",
      *      message="Passeord must be seven characters long and contain at least one digit..."
      * )
+     * @Groups({"write"})
      */
     private $password;
 
