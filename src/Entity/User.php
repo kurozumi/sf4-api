@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -12,9 +11,25 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * API利用条件:
+ *      ・ユーザー一覧取得は不可
+ *      ・登録は誰でも可能
+ *      ・ログイン時は自分のユーザー情報閲覧可能
+ *      ・ログイン時は自分のユーザー情報更新可能
+ *      ・ログイン時は自分のユーザー情報削除可能
+ *
+ *      ・idは閲覧可能
+ *      ・emailは閲覧・書き込み可能
+ *      ・passwordは書き込み可能
  * @ApiResource(
- *      collectionOperations={"post", "get"},
- *      itemOperations={"get"},
+ *      collectionOperations={
+ *          "post"
+ *      },
+ *      itemOperations={
+ *          "get"={"access_control"="is_granted('ROLE_USER') and object == user"},
+ *          "put"={"access_control"="is_granted('ROLE_USER') and object == user"},
+ *          "delete"={"access_control"="is_granted('ROLE_USER') and object == user"}
+ *      },
  *      normalizationContext={
  *          "groups"={"read"}
  *      },
@@ -50,26 +65,16 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @var string The hashed password
+     * @var string ハッシュ化されたパスワード
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
-     * @@Assert\Regex(
-     *      pattern="/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{7,}/",
-     *      message="Passeord must be seven characters long and contain at least one digit..."
-     * )
      * @Groups({"write"})
      */
     private $password;
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Book", mappedBy="user")
-     * @Groups({"read"})
-     */
-    private $books;
-
     public function __construct()
     {
-        $this->books = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -148,36 +153,5 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
-    }
-
-    /**
-     * @return Collection|Book[]
-     */
-    public function getBooks(): Collection
-    {
-        return $this->books;
-    }
-
-    public function addBook(Book $book): self
-    {
-        if (!$this->books->contains($book)) {
-            $this->books[] = $book;
-            $book->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBook(Book $book): self
-    {
-        if ($this->books->contains($book)) {
-            $this->books->removeElement($book);
-            // set the owning side to null (unless already changed)
-            if ($book->getUser() === $this) {
-                $book->setUser(null);
-            }
-        }
-
-        return $this;
     }
 }
