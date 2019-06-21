@@ -15,7 +15,7 @@ class UserFilter extends SQLFilter
     /**
      * エンティティにUserAwareアノテーションが設定され、
      * そのエンティティがUserエンティティとリレーションしている場合に
-     * ユーザーで絞り込むフィルター。
+     * 指定したユーザーで絞り込むフィルター。
      *
      * @param ClassMetaData $targetEntity
      * @param string $targetTableAlias
