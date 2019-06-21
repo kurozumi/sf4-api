@@ -12,4 +12,4 @@ doctrine:
         filters:
             # user_filterというキーでUserFilterを登録
             user_filter:
-                class: App\Filter\UserFilter
+                class: App\Doctrine\Filter\UserFilter

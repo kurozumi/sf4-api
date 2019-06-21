@@ -47,7 +47,7 @@ class UserFilterSubscriber implements EventSubscriberInterface
     public function onKernelRequest(RequestEvent $event)
     {
         if(!$user = $this->getUser()) {
-            throw new \RuntimeException('認証されたユーザーではありません。');
+            return;
         }
 
         $filter = $this->em->getFilters()->enable('user_filter');

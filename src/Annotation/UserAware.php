@@ -17,5 +17,5 @@ use Doctrine\Common\Annotations\Annotation\Target;
  */
 final class UserAware
 {
-    public $userFiledName;
+    public $userFieldName;
 }

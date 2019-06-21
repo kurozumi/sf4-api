@@ -74,13 +74,12 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="user", cascade={"persist", "remove"})
      */
     private $orders;
 
     public function __construct()
     {
-        $this->products = new ArrayCollection();
         $this->orders = new ArrayCollection();
     }
 

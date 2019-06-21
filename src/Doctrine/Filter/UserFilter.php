@@ -41,7 +41,7 @@ class UserFilter extends SQLFilter
             return '';
         }
 
-        if(empty($filedName) || empty($userId)) {
+        if(empty($fieldName) || empty($userId)) {
             return '';
         }
 
