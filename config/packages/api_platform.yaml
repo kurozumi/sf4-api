@@ -6,3 +6,10 @@ api_platform:
 #        html: ['text/html']
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
+
+doctrine:
+    orm:
+        filters:
+            # user_filterというキーでUserFilterを登録
+            user_filter:
+                class: App\Filter\UserFilter
