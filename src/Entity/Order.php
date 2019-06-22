@@ -9,6 +9,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * API利用条件:
+ *      ・ログイン時は注文一覧取得可能
+ *      ・ログイン時は注文登録可能
+ *      ・ログイン時は自分の注文情報閲覧可能
+ *
+ *      ・idは閲覧可能
+ *      ・orderNoは閲覧・書き込み可能
+ *      ・userは閲覧可能
  * @ApiResource(
  *      collectionOperations={
  *          "get"={"access_control"="is_granted('ROLE_USER')"},
@@ -16,8 +24,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *      },
  *      itemOperations={
  *          "get"={"access_control"="is_granted('ROLE_USER') and object.getUser() == user"},
- *          "put"={"access_control"="is_granted('ROLE_USER') and object.getUser() == user"},
- *          "delete"={"access_control"="is_granted('ROLE_USER') and object.getUser() == user"}
+ *          "put"={"access_control"="is_granted('ROLE_ADMIN')},
+ *          "delete"={"access_control"="is_granted('ROLE_ADMIN')}
  *      },
  *      normalizationContext={
  *          "groups"={"read"}
