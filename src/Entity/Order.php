@@ -42,6 +42,7 @@ class Order
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      * @Groups({"read", "write"})
      */
     private $orderNo;
@@ -49,8 +50,7 @@ class Order
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="orders")
      * @ORM\JoinColumn(nullable=false)
-     * @Assert\NotBlank()
-     * @Groups({"read", "write"})
+     * @Groups({"read"})
      */
     private $user;
 

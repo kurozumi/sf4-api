@@ -28,14 +28,17 @@ class UserFilter extends SQLFilter
             throw new \RuntimeException(sprintf('Annotation Readerが必要です。"%s::setAnnotationReader()"でセットして下さい。', __CLASS__));
         }
 
+        // UserAwareアノテーションを取得
         $userAware = $this->reader->getClassAnnotation($targetEntity->getReflectionClass(), UserAware::class);
         if(!$userAware) {
             return '';
         }
 
+        // UserAwareアノテーションで設定されたUserフィールド名
         $fieldName = $userAware->userFieldName;
 
         try {
+            // セットされたuserIdを取得
             $userId = $this->getParameter('id');
         } catch (\InvalidArgumentException $e) {
             return '';
@@ -45,6 +48,7 @@ class UserFilter extends SQLFilter
             return '';
         }
 
+        // クエリにユーザーで絞り込む条件を追加
         return sprintf('%s.%s = %s', $targetTableAlias, $fieldName, $userId);
     }
 

@@ -40,7 +40,7 @@ class UserFilterSubscriber implements EventSubscriberInterface
 
     /**
      * ユーザーがログインしていた場合、
-     * リクエスト毎にDoctrineのUserFilterを初期化
+     * リクエスト毎にDoctrineフィルターのUserFilterを初期化
      *
      * @param RequestEvent $event
      */
@@ -50,8 +50,13 @@ class UserFilterSubscriber implements EventSubscriberInterface
             return;
         }
 
+        // 作成したDoctrineフィルターのUserFilterを有効化
         $filter = $this->em->getFilters()->enable('user_filter');
+
+        // UserIdをフィルターにセット
         $filter->setParameter('id', $user->getId());
+
+        // アノテーションリーダーをフィルターにセット
         $filter->setAnnotationReader($this->reader);
 
     }

@@ -7,7 +7,7 @@ use Doctrine\Common\Annotations\Annotation;
 use Doctrine\Common\Annotations\Annotation\Target;
 
 /**
- * 特定ユーザーで絞り込むためのアノテーション
+ * 特定ユーザーのアイテムのみに絞り込むためのアノテーション
  *
  * Class UserAware
  * @package App\Annotation
