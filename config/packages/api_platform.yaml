@@ -6,6 +6,11 @@ api_platform:
 #        html: ['text/html']
     mapping:
         paths: ['%kernel.project_dir%/src/Entity']
+    swagger:
+        api_keys:
+            apiKye:
+                name: Authorization
+                type: header
 
 doctrine:
     orm:

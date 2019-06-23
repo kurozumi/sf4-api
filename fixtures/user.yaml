@@ -1,0 +1,10 @@
+App\Entity\User:
+  user_{1..10}:
+    email: <email()>
+    roles: [ROLE_USER]
+    password: <password()>
+
+App\Entity\Order:
+  order_{1..20}:
+    user: '@user_*'
+    orderNo: <numberBetween(100000, 999999)>

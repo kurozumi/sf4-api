@@ -60,7 +60,10 @@
         }
     },
     "require-dev": {
+        "behat/behat": "^3.5",
+        "behat/symfony2-extension": "^2.1",
         "doctrine/doctrine-fixtures-bundle": "^3.2",
+        "hautelook/alice-bundle": "^2.5",
         "symfony/maker-bundle": "^1.11",
         "symfony/web-server-bundle": "4.3.*"
     }
