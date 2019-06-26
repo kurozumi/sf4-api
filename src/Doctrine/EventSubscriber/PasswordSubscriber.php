@@ -47,7 +47,6 @@ class PasswordSubscriber implements EventSubscriber
     public function prePersist(LifecycleEventArgs $eventArgs): void
     {
         $entity = $eventArgs->getObject();
-        $objectManager = $eventArgs->getObjectManager();
 
         if($entity instanceof User) {
             if($entity->getPlainPassword()) {
@@ -55,11 +54,6 @@ class PasswordSubscriber implements EventSubscriber
             }
 
             $entity->setRoles($entity->getRoles());
-
-            $userRepository = $objectManager->getRepository(User::class);
-            $secretKey = $userRepository->getUniqueSecretKey();
-
-            $entity->setSecretKey($secretKey);
         }
     }
 
@@ -69,17 +63,11 @@ class PasswordSubscriber implements EventSubscriber
     public function preUpdate(LifecycleEventArgs $eventArgs): void
     {
         $entity = $eventArgs->getObject();
-        $objectManager = $eventArgs->getObjectManager();
 
         if($entity instanceof User) {
             if($entity->getPlainPassword()) {
                 $entity->setPassword($this->passwordEncoder->encodePassword($entity, $entity->getPlainPassword()));
             }
-
-            $userRepository = $objectManager->getRepository(User::class);
-            $secretKey = $userRepository->getUniqueSecretKey();
-
-            $entity->setSecretKey($secretKey);
         }
     }
 }
