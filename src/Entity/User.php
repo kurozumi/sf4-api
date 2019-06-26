@@ -68,10 +68,13 @@ class User implements UserInterface
     /**
      * @var string ハッシュ化されたパスワード
      * @ORM\Column(type="string")
-     * @Assert\NotBlank()
-     * @Groups({"write"})
      */
     private $password;
+
+    /**
+     * @Groups({"write"})
+     */
+    private $plainPassword;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Order", mappedBy="user", cascade={"persist", "remove"})
@@ -107,7 +110,7 @@ class User implements UserInterface
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -134,12 +137,24 @@ class User implements UserInterface
      */
     public function getPassword(): string
     {
-        return (string) $this->password;
+        return (string)$this->password;
     }
 
     public function setPassword(string $password): self
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return (string)$this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
 
         return $this;
     }
@@ -159,6 +174,8 @@ class User implements UserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+
+        $this->setPlainPassword(null);
     }
 
     /**
